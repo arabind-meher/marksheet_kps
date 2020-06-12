@@ -2,7 +2,6 @@ import os
 from os.path import join
 
 import shutil
-
 import pandas as pd
 
 from generate_pdf import GeneratePDF
@@ -10,28 +9,31 @@ from generate_pdf import GeneratePDF
 
 class Marksheet:
     """Marksheet"""
+
     def __init__(self, path, class_name):
-        self.path = path
-        self.class_name = class_name
         self.marksheet = pd.read_csv(join(path, 'Marksheet.csv'))
         self.size = len(self.marksheet)
-        self.output_path = join(path, 'Output')
+        output_path = join(path, 'Output')
 
         del (self.marksheet['Timestamp'])
 
         try:
-            os.mkdir(self.output_path)
+            os.mkdir(output_path)
         except FileExistsError:
-            shutil.rmtree(self.output_path)
-            os.mkdir(self.output_path)
+            shutil.rmtree(output_path)
+            os.mkdir(output_path)
+
+        self.marksheet.to_excel(join(output_path, 'Raw Marksheet.xlsx'))
 
         self.create_unit_10()
         self.calculate_total_mark_percentage()
         self.marksheet_dict = self.create_marksheet_dictionary()
 
-        GeneratePDF.generate_student_marksheet(self.marksheet_dict, self.size, self.output_path)
-        GeneratePDF.generate_unit_marksheet(self.marksheet_dict, self.size, self.output_path, self.class_name)
-        GeneratePDF.generate_term_marksheet(self.marksheet_dict, self.size, self.output_path, self.class_name)
+        self.marksheet.to_excel(join(output_path, 'Final Marksheet.xlsx'))
+
+        GeneratePDF.generate_student_marksheet(self.marksheet_dict, self.size, output_path)
+        GeneratePDF.generate_unit_marksheet(self.marksheet_dict, self.size, output_path, class_name)
+        GeneratePDF.generate_term_marksheet(self.marksheet_dict, self.size, output_path, class_name)
 
     def create_unit_10(self):
         u_english_10 = [x / 3 for x in self.marksheet['U_English']]
