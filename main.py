@@ -1,12 +1,12 @@
 from tkinter import *
 from tkinter import ttk, filedialog
 
-from marksheet import Marksheet
+# from marksheet import Marksheet
 
 if __name__ == '__main__':
     root = Tk()
     root.title('Marksheet')
-    root.geometry('500x200+500+200')
+    root.geometry('500x400')
     root.resizable(0, 0)
     root.configure(bg='#ffffff')
     root.option_add('*foreground', 'black')
@@ -52,8 +52,26 @@ if __name__ == '__main__':
 
     def pressed_ok():
         root.destroy()
-        Marksheet(file_path.get(), class_name.get())
+        # Marksheet(file_path.get(), class_name.get())
 
+
+    Button(
+        root,
+        text='Ok',
+        command=pressed_ok,
+        font=('hack', 12),
+        bg='#ffffff',
+        fg='#000000'
+    ).pack(fill=X, padx=200)
+
+    Button(
+        root,
+        text='Ok',
+        command=pressed_ok,
+        font=('hack', 12),
+        bg='#ffffff',
+        fg='#000000'
+    ).pack(fill=X, padx=200, pady=15)
 
     Button(
         root,
