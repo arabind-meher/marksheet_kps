@@ -1,11 +1,26 @@
 from os.path import join
 
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph
-from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import inch, mm
 from reportlab.lib import colors
+from reportlab.lib.enums import TA_CENTER
 from reportlab.platypus import PageBreak
+
+style = getSampleStyleSheet()
+
+heading1 = ParagraphStyle(
+    'Heading1',
+    parent=style['Heading1'],
+    alignment=TA_CENTER,
+)
+
+heading2 = ParagraphStyle(
+    'Heading2',
+    parent=style['Heading2'],
+    alignment=TA_CENTER
+)
 
 
 class GeneratePDF:
@@ -14,14 +29,13 @@ class GeneratePDF:
     @staticmethod
     def generate_student_marksheet(marksheet_dict, size, path):
         canvas = SimpleDocTemplate(join(path, 'Student Marksheet'), pagesize=A4)
-        sample_style_sheet = getSampleStyleSheet()
 
         element = []
 
         for i in range(size):
 
-            roll = Paragraph("Roll No.: " + str(marksheet_dict[i]['Roll No.']), sample_style_sheet['Heading2'])
-            name = Paragraph("Name: " + marksheet_dict[i]['Name'], sample_style_sheet['Heading2'])
+            roll = Paragraph("Roll No.: " + str(marksheet_dict[i]['Roll No.']), style['Heading2'])
+            name = Paragraph("Name: " + marksheet_dict[i]['Name'], style['Heading2'])
 
             data = [
                 ['Subject', 'Unit', 'Unit_10', 'Oral', 'Term', 'Total', 'Total/2'],
@@ -96,7 +110,7 @@ class GeneratePDF:
             element.append(table)
 
             if i % 2 == 0:
-                space = Paragraph("     ", sample_style_sheet['Heading3'])
+                space = Paragraph("     ", style['Heading3'])
                 element.append(space)
                 element.append(space)
                 element.append(space)
@@ -110,18 +124,17 @@ class GeneratePDF:
                 element.append(space)
                 element.append(space)
             else:
-                element.append(PageBreak()), sample_style_sheet['Heading2']
+                element.append(PageBreak()), style['Heading2']
         canvas.build(element)
         print('Done!')
 
     @staticmethod
     def generate_unit_marksheet(marksheet_dict, size, path, class_name):
         canvas = SimpleDocTemplate(join(path, 'Unit Marksheet'), pagesize=(297 * mm, 210 * mm))
-        sample_style_sheet = getSampleStyleSheet()
 
         element = []
 
-        head = Paragraph(class_name + ' - Unit Test', sample_style_sheet['Heading2'])
+        head = Paragraph(class_name + ' - Unit Test', style['Heading2'])
 
         data = [
             ['Roll No.', 'Name', 'English', 'Hindi', 'Odia', 'Maths', 'Science', 'SST', 'Total Mark', 'Percentage']
@@ -159,11 +172,10 @@ class GeneratePDF:
     @staticmethod
     def generate_term_marksheet(marksheet_dict, size, path, class_name):
         canvas = SimpleDocTemplate(join(path, 'Term Marksheet'), pagesize=(297 * mm, 210 * mm))
-        sample_style_sheet = getSampleStyleSheet()
 
         element = []
 
-        head = Paragraph(class_name + ' - Term Test', sample_style_sheet['Heading2'])
+        head = Paragraph(class_name + ' - Term Test', style['Heading2'])
 
         data = [['Roll No.', 'Name',
                  'English', 'Hindi', 'Odia', 'Maths', 'Science', 'SST', 'GK', 'Computer',
@@ -198,6 +210,104 @@ class GeneratePDF:
         ]))
 
         element.append(head)
+        element.append(table)
+        canvas.build(element)
+        print('Done!')
+
+    @staticmethod
+    def generate_unit_marksheet_standalone(marksheet_dict, size, path, class_name):
+        canvas = SimpleDocTemplate(
+            join(path, 'Unit Marksheet'),
+            pagesize=(297 * mm, 210 * mm),
+            topMargin=15*mm,
+            bottomMargin=15*mm
+        )
+
+        element = list()
+
+        element.append(Paragraph('KHARIAR PUBLIC SCHOOL, KHARIAR', heading1))
+        element.append(Paragraph('Result of Unit Test - 1 (2020-21)', heading2))
+        element.append(Paragraph(class_name, heading2))
+
+        data = [
+            ['Roll No.', 'Name',
+             'English', 'Hindi', 'Odia', 'Maths', 'Science', 'SST',
+             'Mark Obtained', 'Total Mark', 'Percentage', 'Grade']
+        ]
+
+        for i in range(size):
+            data.append([
+                str(marksheet_dict[i]['Roll No.']),
+                marksheet_dict[i]['Name'],
+                str(marksheet_dict[i]['English']),
+                str(marksheet_dict[i]['Hindi']),
+                str(marksheet_dict[i]['Odia']),
+                str(marksheet_dict[i]['Maths']),
+                str(marksheet_dict[i]['Science']),
+                str(marksheet_dict[i]['SST']),
+                str(marksheet_dict[i]['Mark Obtained']),
+                str(marksheet_dict[i]['Total Mark']),
+                str(marksheet_dict[i]['Percentage']),
+                str(marksheet_dict[i]['Grade'])
+            ])
+
+        table = Table(data, repeatRows=1)
+        table.setStyle(TableStyle([
+            ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black)
+        ]))
+
+        element.append(table)
+        canvas.build(element)
+        print('Done!')
+
+    @staticmethod
+    def generate_term_marksheet_standalone(marksheet_dict, size, path, class_name):
+        canvas = SimpleDocTemplate(
+            join(path, 'Term Marksheet'),
+            pagesize=(297 * mm, 210 * mm),
+            topMargin=15 * mm,
+            bottomMargin=15 * mm
+        )
+
+        element = list()
+
+        element.append(Paragraph('KHARIAR PUBLIC SCHOOL, KHARIAR', heading1))
+        element.append(Paragraph('Result of Term Test - 1 (2020-21)', heading2))
+        element.append(Paragraph(class_name, heading2))
+
+        data = [
+            ['Roll No.', 'Name',
+             'English', 'Hindi', 'Odia', 'Maths', 'Science', 'SST', 'GK', 'Computer',
+             'Mark Obtained', 'Total Mark', 'Percentage', 'Grade']
+        ]
+
+        for i in range(size):
+            data.append([
+                str(marksheet_dict[i]['Roll No.']),
+                marksheet_dict[i]['Name'],
+                str(marksheet_dict[i]['English']),
+                str(marksheet_dict[i]['Hindi']),
+                str(marksheet_dict[i]['Odia']),
+                str(marksheet_dict[i]['Maths']),
+                str(marksheet_dict[i]['Science']),
+                str(marksheet_dict[i]['SST']),
+                str(marksheet_dict[i]['GK']),
+                str(marksheet_dict[i]['Computer']),
+                str(marksheet_dict[i]['Mark Obtained']),
+                str(marksheet_dict[i]['Total Mark']),
+                str(marksheet_dict[i]['Percentage']),
+                str(marksheet_dict[i]['Grade'])
+            ])
+
+        table = Table(data, repeatRows=1)
+        table.setStyle(TableStyle([
+            ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black)
+        ]))
+
         element.append(table)
         canvas.build(element)
         print('Done!')

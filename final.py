@@ -7,13 +7,13 @@ import pandas as pd
 from generate_pdf import GeneratePDF
 
 
-class Marksheet:
-    """Marksheet"""
+class FinalMarksheet:
+    """Final Marksheet"""
 
     def __init__(self, path, class_name):
         self.marksheet = pd.read_csv(join(path, 'Marksheet.csv'))
         self.size = len(self.marksheet)
-        output_path = join(path, 'Output')
+        output_path = join(path, 'Final')
 
         del (self.marksheet['Timestamp'])
 

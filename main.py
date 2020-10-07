@@ -1,12 +1,14 @@
 from tkinter import *
 from tkinter import ttk, filedialog
 
-# from marksheet import Marksheet
+from unit import UnitMarksheet
+from term import TermMarksheet
+from final import FinalMarksheet
 
 if __name__ == '__main__':
     root = Tk()
     root.title('Marksheet')
-    root.geometry('500x400')
+    root.geometry('500x250')
     root.resizable(0, 0)
     root.configure(bg='#ffffff')
     root.option_add('*foreground', 'black')
@@ -22,7 +24,7 @@ if __name__ == '__main__':
         font=('hack', 16),
         bg='#ffffff',
         fg='#000000'
-    ).pack(fill=X, padx=10, pady=15)
+    ).pack(fill=X, padx=10, pady=(35, 15))
     file_path.set('Enter File Location')
 
 
@@ -50,36 +52,44 @@ if __name__ == '__main__':
     class_name.set('Enter Class Name')
 
 
-    def pressed_ok():
+    def pressed_unit():
         root.destroy()
-        # Marksheet(file_path.get(), class_name.get())
+        UnitMarksheet(file_path.get(), class_name.get())
+
+    def pressed_term():
+        root.destroy()
+        TermMarksheet(file_path.get(), class_name.get())
+
+    def pressed_final():
+        root.destroy()
+        FinalMarksheet(file_path.get(), class_name.get())
 
 
     Button(
         root,
-        text='Ok',
-        command=pressed_ok,
+        text='Unit',
+        command=pressed_unit,
         font=('hack', 12),
         bg='#ffffff',
         fg='#000000'
-    ).pack(fill=X, padx=200)
+    ).place(x=70, y=175)
 
     Button(
         root,
-        text='Ok',
-        command=pressed_ok,
+        text='Term',
+        command=pressed_term,
         font=('hack', 12),
         bg='#ffffff',
         fg='#000000'
-    ).pack(fill=X, padx=200, pady=15)
+    ).place(x=215, y=175)
 
     Button(
         root,
-        text='Ok',
-        command=pressed_ok,
+        text='Final',
+        command=pressed_final,
         font=('hack', 12),
         bg='#ffffff',
         fg='#000000'
-    ).pack(fill=X, padx=200)
+    ).place(x=350, y=175)
 
     root.mainloop()
