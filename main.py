@@ -8,7 +8,7 @@ from final import FinalMarksheet
 if __name__ == '__main__':
     root = Tk()
     root.title('Marksheet')
-    root.geometry('500x250')
+    root.geometry('500x300')
     root.resizable(0, 0)
     root.configure(bg='#ffffff')
     root.option_add('*foreground', 'black')
@@ -24,8 +24,8 @@ if __name__ == '__main__':
         font=('hack', 16),
         bg='#ffffff',
         fg='#000000'
-    ).pack(fill=X, padx=10, pady=(35, 15))
-    file_path.set('Enter File Location')
+    ).pack(fill=X, padx=10, pady=(30, 15))
+    file_path.set('File Location')
 
 
     def find_file_path():
@@ -41,6 +41,16 @@ if __name__ == '__main__':
         fg='#000000'
     ).pack(fill=X, padx=200)
 
+    text = StringVar()
+    Entry(
+        root,
+        textvariable=text,
+        font=('hack', 16),
+        bg='#ffffff',
+        fg='#000000'
+    ).pack(fill=X, padx=10, pady=15)
+    text.set('Result of ___ (Year)')
+
     class_name = StringVar()
     Entry(
         root,
@@ -49,20 +59,22 @@ if __name__ == '__main__':
         bg='#ffffff',
         fg='#000000'
     ).pack(fill=X, padx=10, pady=15)
-    class_name.set('Enter Class Name')
+    class_name.set('Class Name')
 
 
     def pressed_unit():
         root.destroy()
-        UnitMarksheet(file_path.get(), class_name.get())
+        UnitMarksheet(file_path.get(), text.get(), class_name.get())
+
 
     def pressed_term():
         root.destroy()
-        TermMarksheet(file_path.get(), class_name.get())
+        TermMarksheet(file_path.get(), text.get(), class_name.get())
+
 
     def pressed_final():
         root.destroy()
-        FinalMarksheet(file_path.get(), class_name.get())
+        FinalMarksheet(file_path.get(), text.get(), class_name.get())
 
 
     Button(
@@ -72,7 +84,7 @@ if __name__ == '__main__':
         font=('hack', 12),
         bg='#ffffff',
         fg='#000000'
-    ).place(x=70, y=175)
+    ).place(x=70, y=240)
 
     Button(
         root,
@@ -81,7 +93,7 @@ if __name__ == '__main__':
         font=('hack', 12),
         bg='#ffffff',
         fg='#000000'
-    ).place(x=215, y=175)
+    ).place(x=215, y=240)
 
     Button(
         root,
@@ -90,6 +102,6 @@ if __name__ == '__main__':
         font=('hack', 12),
         bg='#ffffff',
         fg='#000000'
-    ).place(x=350, y=175)
+    ).place(x=350, y=240)
 
     root.mainloop()

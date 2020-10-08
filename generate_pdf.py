@@ -16,9 +16,9 @@ heading1 = ParagraphStyle(
     alignment=TA_CENTER,
 )
 
-heading2 = ParagraphStyle(
-    'Heading2',
-    parent=style['Heading2'],
+heading3 = ParagraphStyle(
+    'Heading3',
+    parent=style['Heading3'],
     alignment=TA_CENTER
 )
 
@@ -30,7 +30,7 @@ class GeneratePDF:
     def generate_student_marksheet(marksheet_dict, size, path):
         canvas = SimpleDocTemplate(join(path, 'Student Marksheet'), pagesize=A4)
 
-        element = []
+        element = list()
 
         for i in range(size):
 
@@ -102,6 +102,7 @@ class GeneratePDF:
             table = Table(data, 7 * [1 * inch], 11 * [0.25 * inch])
             table.setStyle(TableStyle([
                 ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+                ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
                 ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black)
             ]))
 
@@ -124,26 +125,53 @@ class GeneratePDF:
                 element.append(space)
                 element.append(space)
             else:
-                element.append(PageBreak()), style['Heading2']
+                element.append(PageBreak())
         canvas.build(element)
-        print('Done!')
+        print('Student Marksheet Created')
 
     @staticmethod
-    def generate_unit_marksheet(marksheet_dict, size, path, class_name):
-        canvas = SimpleDocTemplate(join(path, 'Unit Marksheet'), pagesize=(297 * mm, 210 * mm))
+    def generate_unit_marksheet(marksheet_dict, size, path, text, class_name):
+        canvas = SimpleDocTemplate(
+            join(path, 'Unit Marksheet'),
+            pagesize=(297 * mm, 210 * mm),
+            topMargin=15 * mm,
+            bottomMargin=15 * mm
+        )
 
-        element = []
+        element = list()
 
-        head = Paragraph(class_name + ' - Unit Test', style['Heading2'])
+        element.append(Paragraph('KHARIAR PUBLIC SCHOOL, KHARIAR', heading1))
+        element.append(Paragraph(text, heading3))
+        element.append(Paragraph(class_name, heading3))
+        element.append(Paragraph('', heading3))
 
         data = [
-            ['Roll No.', 'Name', 'English', 'Hindi', 'Odia', 'Maths', 'Science', 'SST', 'Total Mark', 'Percentage']
+            ['Roll No.', 'Name',
+             'English', 'Hindi', 'Odia', 'Maths', 'Science', 'SST',
+             'Mark Obtained', 'Total Mark', 'Percentage', 'Grade']
         ]
         for i in range(size):
-            total = marksheet_dict[i]['English']['Unit'] + marksheet_dict[i]['Hindi']['Unit'] + \
-                    marksheet_dict[i]['Odia']['Unit'] + marksheet_dict[i]['Maths']['Unit'] + \
-                    marksheet_dict[i]['Science']['Unit'] + marksheet_dict[i]['SST']['Unit']
-            percent = '%.2f' % ((total / 180) * 100)
+            mark_obtained = marksheet_dict[i]['English']['Unit'] + marksheet_dict[i]['Hindi']['Unit'] + \
+                            marksheet_dict[i]['Odia']['Unit'] + marksheet_dict[i]['Maths']['Unit'] + \
+                            marksheet_dict[i]['Science']['Unit'] + marksheet_dict[i]['SST']['Unit']
+            total_mark = 180
+            percent = float('%.2f' % (mark_obtained / 1.8))
+            if percent > 90:
+                grade = 'A1'
+            elif percent > 80:
+                grade = 'A2'
+            elif percent > 70:
+                grade = 'B1'
+            elif percent > 60:
+                grade = 'B2'
+            elif percent > 50:
+                grade = 'C1'
+            elif percent > 40:
+                grade = 'C2'
+            elif percent > 33:
+                grade = 'D'
+            else:
+                grade = 'E'
 
             data.append([
                 str(marksheet_dict[i]['Roll No.']),
@@ -154,39 +182,68 @@ class GeneratePDF:
                 str(marksheet_dict[i]['Maths']['Unit']),
                 str(marksheet_dict[i]['Science']['Unit']),
                 str(marksheet_dict[i]['SST']['Unit']),
-                str(total),
-                str(percent)
+                str(mark_obtained),
+                str(total_mark),
+                str(percent),
+                grade
             ])
 
-        table = Table(data)
+        table = Table(data, repeatRows=1)
         table.setStyle(TableStyle([
             ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
             ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black)
         ]))
 
-        element.append(head)
         element.append(table)
         canvas.build(element)
-        print('Done!')
+        print('Unit Marksheet Created')
 
     @staticmethod
-    def generate_term_marksheet(marksheet_dict, size, path, class_name):
-        canvas = SimpleDocTemplate(join(path, 'Term Marksheet'), pagesize=(297 * mm, 210 * mm))
+    def generate_term_marksheet(marksheet_dict, size, path, text, class_name):
+        canvas = SimpleDocTemplate(
+            join(path, 'Term Marksheet'),
+            pagesize=(297 * mm, 210 * mm),
+            topMargin=15 * mm,
+            bottomMargin=15 * mm
+        )
 
-        element = []
+        element = list()
 
-        head = Paragraph(class_name + ' - Term Test', style['Heading2'])
+        element.append(Paragraph('KHARIAR PUBLIC SCHOOL, KHARIAR', heading1))
+        element.append(Paragraph(text, heading3))
+        element.append(Paragraph(class_name, heading3))
+        element.append(Paragraph('', heading3))
 
-        data = [['Roll No.', 'Name',
-                 'English', 'Hindi', 'Odia', 'Maths', 'Science', 'SST', 'GK', 'Computer',
-                 'Total Mark', 'Percentage']]
+        data = [
+            ['Roll No.', 'Name',
+             'English', 'Hindi', 'Odia', 'Maths', 'Science', 'SST', 'GK', 'Computer',
+             'Mark Obtained', 'Total Mark', 'Percentage', 'Grade']
+        ]
 
         for i in range(size):
-            total = marksheet_dict[i]['English']['Term'] + marksheet_dict[i]['Hindi']['Term'] + \
-                    marksheet_dict[i]['Odia']['Term'] + marksheet_dict[i]['Maths']['Term'] + \
-                    marksheet_dict[i]['Science']['Term'] + marksheet_dict[i]['SST']['Term'] + \
-                    marksheet_dict[i]['GK'] + marksheet_dict[i]['Computer']
-            percent = '%.2f' % (total / 7)
+            mark_obtained = marksheet_dict[i]['English']['Term'] + marksheet_dict[i]['Hindi']['Term'] + \
+                            marksheet_dict[i]['Odia']['Term'] + marksheet_dict[i]['Maths']['Term'] + \
+                            marksheet_dict[i]['Science']['Term'] + marksheet_dict[i]['SST']['Term'] + \
+                            marksheet_dict[i]['GK'] + marksheet_dict[i]['Computer']
+            total_mark = 580
+            percent = float('%.2f' % (mark_obtained / 7))
+            if percent > 90:
+                grade = 'A1'
+            elif percent > 80:
+                grade = 'A2'
+            elif percent > 70:
+                grade = 'B1'
+            elif percent > 60:
+                grade = 'B2'
+            elif percent > 50:
+                grade = 'C1'
+            elif percent > 40:
+                grade = 'C2'
+            elif percent > 33:
+                grade = 'D'
+            else:
+                grade = 'E'
 
             data.append([
                 str(marksheet_dict[i]['Roll No.']),
@@ -199,35 +256,38 @@ class GeneratePDF:
                 str(marksheet_dict[i]['SST']['Term']),
                 str(marksheet_dict[i]['GK']),
                 str(marksheet_dict[i]['Computer']),
-                str(total),
-                str(percent)
+                str(mark_obtained),
+                str(total_mark),
+                str(percent),
+                grade
             ])
 
-        table = Table(data)
+        table = Table(data, repeatRows=1)
         table.setStyle(TableStyle([
             ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
             ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black)
         ]))
 
-        element.append(head)
         element.append(table)
         canvas.build(element)
-        print('Done!')
+        print('Term Marksheet Created')
 
     @staticmethod
-    def generate_unit_marksheet_standalone(marksheet_dict, size, path, class_name):
+    def generate_unit_marksheet_standalone(marksheet_dict, size, path, text, class_name):
         canvas = SimpleDocTemplate(
             join(path, 'Unit Marksheet'),
             pagesize=(297 * mm, 210 * mm),
-            topMargin=15*mm,
-            bottomMargin=15*mm
+            topMargin=15 * mm,
+            bottomMargin=15 * mm
         )
 
         element = list()
 
         element.append(Paragraph('KHARIAR PUBLIC SCHOOL, KHARIAR', heading1))
-        element.append(Paragraph('Result of Unit Test - 1 (2020-21)', heading2))
-        element.append(Paragraph(class_name, heading2))
+        element.append(Paragraph(text, heading3))
+        element.append(Paragraph(class_name, heading3))
+        element.append(Paragraph('', heading3))
 
         data = [
             ['Roll No.', 'Name',
@@ -260,10 +320,10 @@ class GeneratePDF:
 
         element.append(table)
         canvas.build(element)
-        print('Done!')
+        print('Unit Marksheet Created')
 
     @staticmethod
-    def generate_term_marksheet_standalone(marksheet_dict, size, path, class_name):
+    def generate_term_marksheet_standalone(marksheet_dict, size, path, text, class_name):
         canvas = SimpleDocTemplate(
             join(path, 'Term Marksheet'),
             pagesize=(297 * mm, 210 * mm),
@@ -274,8 +334,9 @@ class GeneratePDF:
         element = list()
 
         element.append(Paragraph('KHARIAR PUBLIC SCHOOL, KHARIAR', heading1))
-        element.append(Paragraph('Result of Term Test - 1 (2020-21)', heading2))
-        element.append(Paragraph(class_name, heading2))
+        element.append(Paragraph(text, heading3))
+        element.append(Paragraph(class_name, heading3))
+        element.append(Paragraph('', heading3))
 
         data = [
             ['Roll No.', 'Name',
@@ -310,4 +371,4 @@ class GeneratePDF:
 
         element.append(table)
         canvas.build(element)
-        print('Done!')
+        print('Term Marksheet Created')

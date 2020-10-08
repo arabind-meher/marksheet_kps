@@ -10,7 +10,7 @@ from generate_pdf import GeneratePDF
 class UnitMarksheet:
     """Unit Marksheet"""
 
-    def __init__(self, path, class_name):
+    def __init__(self, path, text, class_name):
         self.marksheet = pd.read_csv(join(path, 'Unit.csv'))
         self.size = len(self.marksheet)
         output_path = join(path, 'Unit')
@@ -30,7 +30,7 @@ class UnitMarksheet:
 
         self.marksheet.to_excel(join(output_path, 'Final Marksheet.xlsx'))
 
-        GeneratePDF.generate_unit_marksheet_standalone(self.marksheet_dict, self.size, output_path, class_name)
+        GeneratePDF.generate_unit_marksheet_standalone(self.marksheet_dict, self.size, output_path, text, class_name)
 
     @staticmethod
     def calculate_grade(percentage):
