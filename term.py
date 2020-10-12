@@ -10,7 +10,7 @@ from generate_pdf import GeneratePDF
 class TermMarksheet:
     """Term Marksheet"""
 
-    def __init__(self, path, text, class_name):
+    def __init__(self, path, number, class_name):
         self.marksheet = pd.read_csv(join(path, 'Term.csv'))
         self.size = len(self.marksheet)
         output_path = join(path, 'Term')
@@ -30,26 +30,26 @@ class TermMarksheet:
 
         self.marksheet.to_excel(join(output_path, 'Final Marksheet.xlsx'))
 
-        GeneratePDF.generate_term_marksheet_standalone(self.marksheet_dict, self.size, output_path, text, class_name)
+        GeneratePDF.generate_term_marksheet_standalone(self.marksheet_dict, self.size, output_path, number, class_name)
 
     @staticmethod
     def calculate_grade(percentage):
         grade = list()
         for x in percentage:
             x = float(x)
-            if x > 90:
+            if x >= 91:
                 grade.append('A1')
-            elif x > 80:
+            elif x >= 81:
                 grade.append('A2')
-            elif x > 70:
+            elif x >= 71:
                 grade.append('B1')
-            elif x > 60:
+            elif x >= 61:
                 grade.append('B2')
-            elif x > 50:
+            elif x >= 51:
                 grade.append('C1')
-            elif x > 40:
+            elif x >= 41:
                 grade.append('C2')
-            elif x > 33:
+            elif x >= 33:
                 grade.append('D')
             else:
                 grade.append('E')

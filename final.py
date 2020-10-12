@@ -10,7 +10,7 @@ from generate_pdf import GeneratePDF
 class FinalMarksheet:
     """Final Marksheet"""
 
-    def __init__(self, path, text, class_name):
+    def __init__(self, path, number, class_name):
         self.marksheet = pd.read_csv(join(path, 'Final.csv'))
         self.size = len(self.marksheet)
         output_path = join(path, 'Final')
@@ -32,8 +32,8 @@ class FinalMarksheet:
         self.marksheet.to_excel(join(output_path, 'Final Marksheet.xlsx'))
 
         GeneratePDF.generate_student_marksheet(self.marksheet_dict, self.size, output_path)
-        GeneratePDF.generate_unit_marksheet(self.marksheet_dict, self.size, output_path, text, class_name)
-        GeneratePDF.generate_term_marksheet(self.marksheet_dict, self.size, output_path, text, class_name)
+        GeneratePDF.generate_unit_marksheet(self.marksheet_dict, self.size, output_path, number, class_name)
+        GeneratePDF.generate_term_marksheet(self.marksheet_dict, self.size, output_path, number, class_name)
 
     def create_unit_10(self):
         u_english_10 = ['%.2f' % (x / 3) for x in self.marksheet['U_English']]
@@ -55,19 +55,19 @@ class FinalMarksheet:
         grade = list()
         for x in percentage:
             x = float(x)
-            if x > 90:
+            if x >= 91:
                 grade.append('A1')
-            elif x > 80:
+            elif x >= 81:
                 grade.append('A2')
-            elif x > 70:
+            elif x >= 71:
                 grade.append('B1')
-            elif x > 60:
+            elif x >= 61:
                 grade.append('B2')
-            elif x > 50:
+            elif x >= 51:
                 grade.append('C1')
-            elif x > 40:
+            elif x >= 41:
                 grade.append('C2')
-            elif x > 33:
+            elif x >= 33:
                 grade.append('D')
             else:
                 grade.append('E')
@@ -230,10 +230,14 @@ class FinalMarksheet:
             # Computer
             student_dict['Computer'] = self.marksheet.loc[i]['T_Computer']
 
+            # Mark Obtained
+            student_dict['Mark Obtained'] = '%.2f' % (self.marksheet.loc[i]['Mark Obtained'])
             # Total Mark
-            student_dict['Total Mark'] = '%.2f' % (self.marksheet.loc[i]['Total Mark'])
+            student_dict['Total Mark'] = '%.2f' % float(self.marksheet.loc[i]['Total Mark'])
             # Percentage
             student_dict['Percentage'] = '%.2f' % float(self.marksheet.loc[i]['Percentage'])
+            # Grade
+            student_dict['Grade'] = self.marksheet.loc[i]['Grade']
 
             marksheet_dict[i] = student_dict
         return marksheet_dict

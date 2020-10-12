@@ -34,8 +34,8 @@ class GeneratePDF:
 
         for i in range(size):
 
-            roll = Paragraph("Roll No.: " + str(marksheet_dict[i]['Roll No.']), style['Heading2'])
-            name = Paragraph("Name: " + marksheet_dict[i]['Name'], style['Heading2'])
+            roll = Paragraph("Roll No.: " + str(marksheet_dict[i]['Roll No.']), style['Heading3'])
+            name = Paragraph("Name: " + marksheet_dict[i]['Name'], style['Heading3'])
 
             data = [
                 ['Subject', 'Unit', 'Unit_10', 'Oral', 'Term', 'Total', 'Total/2'],
@@ -95,15 +95,24 @@ class GeneratePDF:
                 ],
                 ['G.K', ' ', ' ', ' ', ' ', marksheet_dict[i]['GK'], ' '],
                 ['Computer', ' ', ' ', ' ', ' ', marksheet_dict[i]['Computer'], ' '],
-                ['Total', ' ', ' ', ' ', ' ', marksheet_dict[i]['Total Mark'], ' '],
-                ['Percent', ' ', ' ', ' ', ' ', marksheet_dict[i]['Percentage'], ' ']
+                ['Mark Obtained', ' ', ' ', ' ', ' ', marksheet_dict[i]['Mark Obtained'], ' '],
+                ['Total Mark', ' ', ' ', ' ', ' ', marksheet_dict[i]['Total Mark'], ' '],
+                ['Percent', ' ', ' ', ' ', ' ', marksheet_dict[i]['Percentage'], ' '],
+                ['Grade', ' ', ' ', ' ', ' ', marksheet_dict[i]['Grade'], ' ']
             ]
 
-            table = Table(data, 7 * [1 * inch], 11 * [0.25 * inch])
+            table = Table(
+                data,
+                colWidths=[1.25*inch, 0.75*inch, 0.75*inch, 0.75*inch, 0.75*inch, 0.75*inch, 0.75*inch]
+            )
             table.setStyle(TableStyle([
                 ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
+                ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
                 ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
-                ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black)
+                ('ALIGN', (0, 0), (-1, 0), 'LEFT'),
+                ('ALIGN', (0, 1), (0, -1), 'LEFT'),
+                ('ALIGN', (1, 1), (-1, -1), 'RIGHT'),
+                ('ALIGN', (5, 12), (5, 12), 'CENTER')
             ]))
 
             element.append(roll)
@@ -119,18 +128,13 @@ class GeneratePDF:
                 element.append(space)
                 element.append(space)
                 element.append(space)
-                element.append(space)
-                element.append(space)
-                element.append(space)
-                element.append(space)
-                element.append(space)
             else:
                 element.append(PageBreak())
         canvas.build(element)
         print('Student Marksheet Created')
 
     @staticmethod
-    def generate_unit_marksheet(marksheet_dict, size, path, text, class_name):
+    def generate_unit_marksheet(marksheet_dict, size, path, number, class_name):
         canvas = SimpleDocTemplate(
             join(path, 'Unit Marksheet'),
             pagesize=(297 * mm, 210 * mm),
@@ -141,7 +145,7 @@ class GeneratePDF:
         element = list()
 
         element.append(Paragraph('KHARIAR PUBLIC SCHOOL, KHARIAR', heading1))
-        element.append(Paragraph(text, heading3))
+        element.append(Paragraph('Result of Unit Test - ' + number, heading3))
         element.append(Paragraph(class_name, heading3))
         element.append(Paragraph('', heading3))
 
@@ -156,19 +160,19 @@ class GeneratePDF:
                             marksheet_dict[i]['Science']['Unit'] + marksheet_dict[i]['SST']['Unit']
             total_mark = 180
             percent = float('%.2f' % (mark_obtained / 1.8))
-            if percent > 90:
+            if percent >= 91:
                 grade = 'A1'
-            elif percent > 80:
+            elif percent >= 81:
                 grade = 'A2'
-            elif percent > 70:
+            elif percent >= 71:
                 grade = 'B1'
-            elif percent > 60:
+            elif percent >= 61:
                 grade = 'B2'
-            elif percent > 50:
+            elif percent >= 51:
                 grade = 'C1'
-            elif percent > 40:
+            elif percent >= 41:
                 grade = 'C2'
-            elif percent > 33:
+            elif percent >= 33:
                 grade = 'D'
             else:
                 grade = 'E'
@@ -192,7 +196,10 @@ class GeneratePDF:
         table.setStyle(TableStyle([
             ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
             ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
-            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black)
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+            ('ALIGN', (2, 0), (-2, -1), 'RIGHT'),
+            ('ALIGN', (11, 1), (11, -1), 'CENTER')
         ]))
 
         element.append(table)
@@ -200,7 +207,7 @@ class GeneratePDF:
         print('Unit Marksheet Created')
 
     @staticmethod
-    def generate_term_marksheet(marksheet_dict, size, path, text, class_name):
+    def generate_term_marksheet(marksheet_dict, size, path, number, class_name):
         canvas = SimpleDocTemplate(
             join(path, 'Term Marksheet'),
             pagesize=(297 * mm, 210 * mm),
@@ -211,7 +218,7 @@ class GeneratePDF:
         element = list()
 
         element.append(Paragraph('KHARIAR PUBLIC SCHOOL, KHARIAR', heading1))
-        element.append(Paragraph(text, heading3))
+        element.append(Paragraph('Result of Term Test - ' + number, heading3))
         element.append(Paragraph(class_name, heading3))
         element.append(Paragraph('', heading3))
 
@@ -228,19 +235,19 @@ class GeneratePDF:
                             marksheet_dict[i]['GK'] + marksheet_dict[i]['Computer']
             total_mark = 580
             percent = float('%.2f' % (mark_obtained / 7))
-            if percent > 90:
+            if percent >= 91:
                 grade = 'A1'
-            elif percent > 80:
+            elif percent >= 81:
                 grade = 'A2'
-            elif percent > 70:
+            elif percent >= 71:
                 grade = 'B1'
-            elif percent > 60:
+            elif percent >= 61:
                 grade = 'B2'
-            elif percent > 50:
+            elif percent >= 51:
                 grade = 'C1'
-            elif percent > 40:
+            elif percent >= 41:
                 grade = 'C2'
-            elif percent > 33:
+            elif percent >= 33:
                 grade = 'D'
             else:
                 grade = 'E'
@@ -266,7 +273,10 @@ class GeneratePDF:
         table.setStyle(TableStyle([
             ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
             ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
-            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black)
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+            ('ALIGN', (2, 0), (-2, -1), 'RIGHT'),
+            ('ALIGN', (13, 1), (13, -1), 'CENTER')
         ]))
 
         element.append(table)
@@ -274,7 +284,7 @@ class GeneratePDF:
         print('Term Marksheet Created')
 
     @staticmethod
-    def generate_unit_marksheet_standalone(marksheet_dict, size, path, text, class_name):
+    def generate_unit_marksheet_standalone(marksheet_dict, size, path, number, class_name):
         canvas = SimpleDocTemplate(
             join(path, 'Unit Marksheet'),
             pagesize=(297 * mm, 210 * mm),
@@ -285,7 +295,7 @@ class GeneratePDF:
         element = list()
 
         element.append(Paragraph('KHARIAR PUBLIC SCHOOL, KHARIAR', heading1))
-        element.append(Paragraph(text, heading3))
+        element.append(Paragraph('Result of Unit Test - ' + number, heading3))
         element.append(Paragraph(class_name, heading3))
         element.append(Paragraph('', heading3))
 
@@ -315,7 +325,10 @@ class GeneratePDF:
         table.setStyle(TableStyle([
             ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
             ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
-            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black)
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+            ('ALIGN', (2, 0), (-2, -1), 'RIGHT'),
+            ('ALIGN', (11, 1), (11, -1), 'CENTER')
         ]))
 
         element.append(table)
@@ -323,7 +336,7 @@ class GeneratePDF:
         print('Unit Marksheet Created')
 
     @staticmethod
-    def generate_term_marksheet_standalone(marksheet_dict, size, path, text, class_name):
+    def generate_term_marksheet_standalone(marksheet_dict, size, path, number, class_name):
         canvas = SimpleDocTemplate(
             join(path, 'Term Marksheet'),
             pagesize=(297 * mm, 210 * mm),
@@ -334,7 +347,7 @@ class GeneratePDF:
         element = list()
 
         element.append(Paragraph('KHARIAR PUBLIC SCHOOL, KHARIAR', heading1))
-        element.append(Paragraph(text, heading3))
+        element.append(Paragraph('Result of Term Test - ' + number, heading3))
         element.append(Paragraph(class_name, heading3))
         element.append(Paragraph('', heading3))
 
@@ -366,7 +379,10 @@ class GeneratePDF:
         table.setStyle(TableStyle([
             ('BOX', (0, 0), (-1, -1), 0.25, colors.black),
             ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
-            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black)
+            ('INNERGRID', (0, 0), (-1, -1), 0.25, colors.black),
+            ('ALIGN', (0, 0), (0, -1), 'RIGHT'),
+            ('ALIGN', (2, 0), (-2, -1), 'RIGHT'),
+            ('ALIGN', (13, 1), (13, -1), 'CENTER')
         ]))
 
         element.append(table)

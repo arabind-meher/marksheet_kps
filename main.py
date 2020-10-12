@@ -41,15 +41,15 @@ if __name__ == '__main__':
         fg='#000000'
     ).pack(fill=X, padx=200)
 
-    text = StringVar()
+    number = StringVar()
     Entry(
         root,
-        textvariable=text,
+        textvariable=number,
         font=('hack', 16),
         bg='#ffffff',
         fg='#000000'
     ).pack(fill=X, padx=10, pady=15)
-    text.set('Result of ___ (Year)')
+    number.set('Number (Year)')
 
     class_name = StringVar()
     Entry(
@@ -64,17 +64,17 @@ if __name__ == '__main__':
 
     def pressed_unit():
         root.destroy()
-        UnitMarksheet(file_path.get(), text.get(), class_name.get())
+        UnitMarksheet(file_path.get(), number.get(), class_name.get())
 
 
     def pressed_term():
         root.destroy()
-        TermMarksheet(file_path.get(), text.get(), class_name.get())
+        TermMarksheet(file_path.get(), number.get(), class_name.get())
 
 
     def pressed_final():
         root.destroy()
-        FinalMarksheet(file_path.get(), text.get(), class_name.get())
+        FinalMarksheet(file_path.get(), number.get(), class_name.get())
 
 
     Button(
